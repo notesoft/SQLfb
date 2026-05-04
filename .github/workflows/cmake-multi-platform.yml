@@ -4,9 +4,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "SQLfb-CMake-LLVM" ]
+    branches: [ "Khalyutin-patch-1" ]
   pull_request:
-    branches: [ "SQLfb-CMake-LLVM" ]
+    branches: [ "Khalyutin-patch-1" ]
 
 jobs:
   build:
