@@ -61,7 +61,7 @@ function(build_icu4c_win_MSVS  win_arh)
 endfunction()
 
 
-function(build_icu4c_win_LLVM  nix_arh)
+function(build_icu4c_LLVM  nix_arh)
 
     set(ICU_DIR_build_nix  "${ICU_DIR_build}/${nix_arh}")
     set(ICU_DIR_result_nix "${ICU_DIR_result}/${nix_arh}/lib")
@@ -212,7 +212,7 @@ function(build_icu4c ICU_VER)
             build_icu4c_win_MSVS(arm64)
         endif()
     else()
-        build_icu4c_win_LLVM("${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+        build_icu4c_LLVM("${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
     endif()
 
     set(ICU_DIR_include  "${ICU_DIR_include}" PARENT_SCOPE)
