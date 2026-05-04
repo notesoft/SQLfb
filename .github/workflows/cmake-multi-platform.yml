@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+  
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -23,7 +24,7 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Release]
         c_compiler: [clang]
         include:
@@ -41,9 +42,17 @@ jobs:
 #          - os: ubuntu-latest
 #            c_compiler: cl
 
+
+#    runs-on: windows-latest
+#    steps:
+#      - uses: msys2/setup-msys2@v2
+#        with:
+#          update: true
+#          install: curl
+
+
     steps:
     - uses: actions/checkout@v4 
-    - uses: msys2/setup-msys2@v2
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
