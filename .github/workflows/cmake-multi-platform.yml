@@ -24,19 +24,22 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]        
         build_type: [Release]
         c_compiler: [clang]
         include:
           - os: windows-latest
             c_compiler: clang
             cpp_compiler: clang++
+            shell: msys2
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+            shell: bash
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
+            shell: bash
             
 #        exclude:
 #          - os: windows-latest
@@ -61,7 +64,7 @@ jobs:
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
-      shell: bash
+      # shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
