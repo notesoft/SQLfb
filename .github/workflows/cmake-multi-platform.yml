@@ -28,18 +28,18 @@ jobs:
         build_type: [Release]
         c_compiler: [clang]
         cpp_compiler: [clang++]
-        arch: [x64, arm64, x86, arm32]
+        # arch: [x64, arm64, x86, arm32]
 
         include:
           - os: windows-latest
-            c_compiler: clang
-            cpp_compiler: clang++
+            # c_compiler: clang
+            # cpp_compiler: clang++
           - os: ubuntu-latest
-            c_compiler: clang
-            cpp_compiler: clang++
+            # c_compiler: clang
+            # cpp_compiler: clang++
           - os: macos-latest
-            c_compiler: clang
-            cpp_compiler: clang++
+            # c_compiler: clang
+            # cpp_compiler: clang++
             
 #        exclude:
 #          - os: windows-latest
