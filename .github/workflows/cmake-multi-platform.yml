@@ -24,7 +24,8 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]               
+        # os: [ubuntu-latest, windows-latest, macos-latest]               
+        os: [windows-latest]               
         build_type: [Release]
         c_compiler: [clang]
         include:
@@ -33,14 +34,14 @@ jobs:
             cpp_compiler: clang++
             # shell: msys2
             uses: msys2/setup-msys2@v2            
-          - os: ubuntu-latest
-            c_compiler: clang
-            cpp_compiler: clang++
-            # shell: bash
-          - os: macos-latest
-            c_compiler: clang
-            cpp_compiler: clang++
-            # shell: bash
+          # - os: ubuntu-latest
+          #   c_compiler: clang
+          #   cpp_compiler: clang++
+          #   # shell: bash
+          # - os: macos-latest
+          #   c_compiler: clang
+          #   cpp_compiler: clang++
+          #   # shell: bash
             
 #        exclude:
 #          - os: windows-latest
@@ -70,10 +71,13 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: install librarys
+    - name: Prepare
 
-      run: sed --help
+      run: |
+        for /r %%i in (*.bat) do unix2dos "%%i"
+        # choco install --no-progress --yes innosetup --version=6.4.0 --allow-downgrade
 
+      # run: sed --help
 #      run: pacman -S sed
 
     - name: Configure CMake
