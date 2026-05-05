@@ -74,9 +74,9 @@ jobs:
     - name: Prepare
       run: |
         # for /r %%i in (*.bat) do unix2dos "%%i"
-        unix2dos D:/a/SQLfb/SQLfb/builds/win32/parse.bat
-        SET TMPDIR=${TEMP}
-        echo "TMPDIR=${TEMP}" 
+        # unix2dos D:/a/SQLfb/SQLfb/builds/win32/parse.bat
+        # SET TMPDIR=${TEMP}
+        # echo "TMPDIR=${TEMP}" 
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

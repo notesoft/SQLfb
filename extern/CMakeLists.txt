@@ -179,7 +179,9 @@ file(GLOB btyacc_src "btyacc/*.c" "btyacc/*.h")
 if (NOT CMAKE_CROSSCOMPILING)
     add_executable          (btyacc ${btyacc_src})
     project_group           (btyacc Extern)
-    set_output_directory    (btyacc . CURRENT_DIR)
+    set_target_properties   (btyacc PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${NATIVE_BUILD_DIR}/src")
+    set_target_properties   (btyacc PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${NATIVE_BUILD_DIR}/src")
+    set_target_properties   (btyacc PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${NATIVE_BUILD_DIR}/src")
 endif() 
 
 
