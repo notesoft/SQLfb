@@ -74,7 +74,7 @@ jobs:
     - name: Prepare
       run: |
         # for /r %%i in (*.bat) do unix2dos "%%i"
-        unix2dos D:\a\SQLfb\SQLfb\builds\win32\parse.bat
+        unix2dos D:/a/SQLfb/SQLfb/builds/win32/parse.bat
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -89,7 +89,7 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all -j 8
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 1
 
 #    - name: Test
 #      working-directory: ${{ steps.strings.outputs.build-output-dir }}
