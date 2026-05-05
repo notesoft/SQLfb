@@ -75,7 +75,7 @@ jobs:
       run: |
         # for /r %%i in (*.bat) do unix2dos "%%i"
         unix2dos D:/a/SQLfb/SQLfb/builds/win32/parse.bat
-        export TMPDIR=${TEMP}
+        SET TMPDIR=${TEMP}
         echo "TMPDIR=${TEMP}" 
 
     - name: Configure CMake
