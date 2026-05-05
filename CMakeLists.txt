@@ -273,7 +273,10 @@ if (WIN32)
         # by default CMake with llvm-rc create file with .rc.res.res extention instade of .rc.res"    
         set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <DEFINES> -fo <OBJECT> <SOURCE>")
 
-        add_compile_options("-mcrc32")
+        if (SYSTEM_CPU_TYPE STREQUAL "amd")
+           add_compile_options("-mcrc32")
+        endif()
+
         link_libraries("Bcrypt") 
     endif()
 

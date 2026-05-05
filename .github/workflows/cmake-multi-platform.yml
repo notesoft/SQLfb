@@ -24,24 +24,20 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        # os: [ubuntu-latest, windows-latest, macos-latest]               
-        os: [windows-latest]               
+        os: [ubuntu-latest, windows-latest, macos-latest]               
+        # os: [windows-latest]               
         build_type: [Release]
         c_compiler: [clang]
         include:
           - os: windows-latest
             c_compiler: clang
             cpp_compiler: clang++
-            # shell: msys2
-            # uses: msys2/setup-msys2@v2            
-          # - os: ubuntu-latest
-          #   c_compiler: clang
-          #   cpp_compiler: clang++
-          #   # shell: bash
-          # - os: macos-latest
-          #   c_compiler: clang
-          #   cpp_compiler: clang++
-          #   # shell: bash
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+          - os: macos-latest
+            c_compiler: clang
+            cpp_compiler: clang++
             
 #        exclude:
 #          - os: windows-latest
@@ -50,14 +46,6 @@ jobs:
 #            c_compiler: clang
 #          - os: ubuntu-latest
 #            c_compiler: cl
-
-
-#    runs-on: windows-latest
-#    steps:
-#      - uses: msys2/setup-msys2@v2
-#        with:
-#          update: true
-#          install: curl
 
 
     steps:
@@ -91,7 +79,7 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 1
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
 
 #    - name: Test
 #      working-directory: ${{ steps.strings.outputs.build-output-dir }}

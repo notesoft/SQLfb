@@ -264,7 +264,7 @@ add_custom_command(
         ${parse_src}
     COMMAND sed -n "/%type .*/p" ${CMAKE_CURRENT_SOURCE_DIR}/dsql/parse.y > types.y
     COMMAND sed "s/%type .*//" ${CMAKE_CURRENT_SOURCE_DIR}/dsql/parse.y > y.y
-    COMMAND ${CMAKE_COMMAND} -E env "${btyacc_env}" -- btyacc -l -d -S ${CMAKE_CURRENT_SOURCE_DIR}/dsql/btyacc_fb.ske y.y
+    COMMAND ${CMAKE_COMMAND} -E env "${btyacc_env}" -- ${CMAKE_CURRENT_BINARY_DIR}/btyacc -l -d -S ${CMAKE_CURRENT_SOURCE_DIR}/dsql/btyacc_fb.ske y.y
     COMMAND sed ${sed_i_opyion} "s/#define \\([A-Z].*\\)/#define TOK_\\1/g" y_tab.h
     COMMAND sed ${sed_i_opyion} "s/#define TOK_YY\\(.*\\)/#define YY\\1/g" y_tab.h
 
