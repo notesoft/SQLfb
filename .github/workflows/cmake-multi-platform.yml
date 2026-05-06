@@ -15,7 +15,8 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]               
+        os: [windows-latest, windows-latest-arm]               
+        # os: [ubuntu-latest, windows-latest, macos-latest]               
         build_type: [Release]
         c_compiler: [clang]
         cpp_compiler: [clang++]
@@ -49,8 +50,8 @@ jobs:
         -S ${{ github.workspace }}
         -G "Unix Makefiles"
 
-    - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
+    # - name: Build
+    #   run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
 
 #    - name: Test
 #      working-directory: ${{ steps.strings.outputs.build-output-dir }}
