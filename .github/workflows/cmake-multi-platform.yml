@@ -15,8 +15,8 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ ubuntu-24.04-arm, windows-11-arm, macos-26-intel ]               
-        # os: [ubuntu-latest, windows-latest, macos-latest]               
+        os: [ ubuntu-24.04-arm ]               
+        # os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm, windows-11-arm, macos-26-intel]               
         build_type: [Release]
         c_compiler: [clang]
         cpp_compiler: [clang++]
@@ -51,6 +51,9 @@ jobs:
         -G "Unix Makefiles"
 
     - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
+
+    - name: reBuild
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
 
 #    - name: Test
