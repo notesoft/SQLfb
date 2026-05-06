@@ -44,12 +44,15 @@ if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "AMD" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES
 elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES "ARM" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
     set(SYSTEM_CPU_TYPE arm)
 
+
     if (${CMAKE_SIZEOF_VOID_P} EQUAL 8)
         add_definitions(-DRC_ARH_arm64)   
+        add_definitions(-DARM64)   
         # add_compile_options("-m64")    
         message("== build for  arm64 system" )
     elseif(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
         add_definitions(-DRC_ARH_arm32)   
+        add_definitions(-DARM32)   
         # add_compile_options("-m32")
         message("== build for  arm32 system" )
     endif()
