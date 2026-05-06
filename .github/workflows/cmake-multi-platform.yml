@@ -20,15 +20,15 @@ jobs:
         c_compiler: [clang]
         cpp_compiler: [clang++]
 
-        include:
-          - os: windows-latest
-          - os: ubuntu-latest
-          - os: macos-latest
+#        include:
+#          - os: windows-latest
+#          - os: ubuntu-latest
+#          - os: macos-latest
             
-       exclude:
-         - os: windows-latest
-         - os: windows-latest
-         - os: ubuntu-latest
+#       exclude:
+#         - os: windows-latest
+#         - os: windows-latest
+#         - os: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4 
