@@ -27,47 +27,47 @@ option(WITH_LIBTOM_STATIC   "on Linux build and link libtommath and libtomcript 
 option(USE_TTMATH_MASM      "use assemler func in libtommath on win-arm-64 (need add ml64.exe in PATH)" OFF)
 option(REBUILD_ICU          "download from git and rebuild ICU library (on win need add MSBuild.exe in PATH)"  OFF)
 
+if (${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+    set(CPU_IS_64 ON) 
+    message("== CPU is 64 bit")
+else(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
+    set(CPU_IS_32 ON) 
+    message("== CPU is 32 bit")
+endif()
+
+
 
 if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "AMD" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86" ) 
+
     set(SYSTEM_CPU_TYPE x86)
 
     if (${CMAKE_SIZEOF_VOID_P} EQUAL 8)
         add_definitions(-DRC_ARH_x64)   
-        # add_compile_options("-m64")    
         message("== build for amd64 system" )
     else(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
         add_definitions(-DRC_ARH_x32)   
-        # add_compile_options("-m32")
-        message("== build for amd32 system" )
+        message("== build for x86-32 system" )
     endif()
 
-elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES "ARM" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
-    set(SYSTEM_CPU_TYPE arm)
+elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES "ARM" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch")
 
+    set(SYSTEM_CPU_TYPE arm)
+    set(CPU_IS_ARM ON) 
+
+    add_definitions(-D__arm__)
 
     if (${CMAKE_SIZEOF_VOID_P} EQUAL 8)
         add_definitions(-DRC_ARH_arm64)   
         add_definitions(-DARM64)   
-        # add_compile_options("-m64")    
+        add_definitions(-DCPU_TYPE=arm64)   
         message("== build for  arm64 system" )
     elseif(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
         add_definitions(-DRC_ARH_arm32)   
-        add_definitions(-DARM32)   
-        # add_compile_options("-m32")
+        add_definitions(-DARM)   
+        add_definitions(-DCPU_TYPE=arm64)   
         message("== build for  arm32 system" )
     endif()
 
-endif()
-
-
-if (BUILD_x32)
-    add_definitions(-DRC_ARH_x86) # -D__32__   
-    # add_compile_options("-m32")    
-    # message("== build for 32-bit system" )
-else()
-    add_definitions(-DRC_ARH_x64) # -D__64__  
-    # add_compile_options("-m64")
-    # message("== build for 64-bit system" )
 endif()
 
 
@@ -196,7 +196,7 @@ set(FB_SERVICE_NAME "gds_db")
 set(FB_SERVICE_PORT  3050)
 
 if (WIN32)
-    set(FB_PREFIX "c:\\\\Program Files\\\\Firebird\\\\")
+    set(FB_PREFIX "c:\\\\Program iles\\\\Firebird\\\\")
     set(FB_IPC_NAME "FIREBIRD")
 endif()
 
@@ -255,7 +255,7 @@ endif()
 #
 ################################################################################
 
-add_definitions(-DDEV_BUILD)
+# add_definitions(-DDEV_BUILD)
 
 
 if (WIN32)
@@ -317,7 +317,11 @@ if (UNIX)
     set(OS_DIR posix)
 
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -msse4 -std=c++20")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++20") # -msse4 
+
+    if (NOT ${SYSTEM_CPU_TYPE} EQUAL "arm")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4")
+    endif()
 
     if (NOT CMAKE_CROSSCOMPILING)
         # set(LIB_readline readline)
@@ -366,6 +370,22 @@ if (APPLE)
 elseif (UNIX)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
 endif()
+
+if (LINUX AND CPU_IS_ARM AND CPU_IS_64)
+    set(COMMON_FLAGS "-DLINUX -DARM64 -pipe -MMD -fPIC -fsigned-char -fmessage-length=0")
+    set(PROD_FLAGS "${COMMON_FLAGS} -O3 ")
+    set(DEV_FLAGS  "${COMMON_FLAGS} -ggdb -Wall -Wno-non-virtual-dtor")
+endif()
+if (LINUX AND CPU_IS_ARM AND CPU_IS_32)
+    set(COMMON_FLAGS "-DLINUX   -DARM -pipe -MMD -fPIC -fsigned-char -fmessage-length=0 -DFB_SEND_FLAGS=MSG_NOSIGNAL")
+    set(PROD_FLAGS  "${COMMON_FLAGS} -O3")
+    set(DEV_FLAGS   "${COMMON_FLAGS} -ggdb -Wall -Wno-non-virtual-dtor -p")
+endif()
+
+    set(CMAKE_C_FLAGS_DEBUG     "${CMAKE_C_FLAGS_DEBUG} ${DEV_FLAGS}")
+    set(CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} ${PROD_FLAGS}")
+    set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${DEV_FLAGS}")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${PROD_FLAGS}")
 
 
 ################################################################################
