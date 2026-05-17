@@ -95,19 +95,19 @@ set(ENABLE_BINRELOC 1)
 string(TOUPPER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME_UPPER)
 set(${CMAKE_SYSTEM_NAME_UPPER} 1)
 
-string(TOUPPER ${CMAKE_SYSTEM_PROCESSOR} CMAKE_SYSTEM_PROCESSOR_UPPER)
-string(FIND ${CMAKE_SYSTEM_PROCESSOR} "arm" ARM)
+# string(TOUPPER ${CMAKE_SYSTEM_PROCESSOR} CMAKE_SYSTEM_PROCESSOR_UPPER)
+# string(FIND ${CMAKE_SYSTEM_PROCESSOR} "arm" ARM)
 # if (NOT ${ARM} EQUAL -1)
 #     set(ARM 1)
 # else()
 #     set(ARM)
 # endif()
-if (${CMAKE_SYSTEM_PROCESSOR_UPPER} STREQUAL "X86_64" OR
-    ${CMAKE_SYSTEM_PROCESSOR_UPPER} STREQUAL "AMD64")
-    set(AMD64 1)
-    set(I386 1)
-endif()
-set(${CMAKE_SYSTEM_PROCESSOR_UPPER} 1)
+# if (${CMAKE_SYSTEM_PROCESSOR_UPPER} STREQUAL "X86_64" OR
+#     ${CMAKE_SYSTEM_PROCESSOR_UPPER} STREQUAL "AMD64")
+#     set(AMD64 1)
+#     set(I386 1)
+# endif()
+# set(${CMAKE_SYSTEM_PROCESSOR_UPPER} 1)
 
 set(SHRLIB_EXT ${CMAKE_SHARED_LIBRARY_SUFFIX})
 string(REPLACE "." "" SHRLIB_EXT ${SHRLIB_EXT})
@@ -228,9 +228,9 @@ set(functions_list
     pthread_cancel
     pthread_keycreate pthread_key_create
     pthread_mutexattr_setprotocol
-    pthread_mutexattr_setrobust_np
-    pthread_mutex_consistent_np
-    pthread_rwlockattr_setkind_np
+    pthread_mutexattr_setrobust
+    pthread_mutex_consistent
+    pthread_rwlockattr_setkind
     qsort_r
     setitimer
     semtimedop

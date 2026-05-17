@@ -39,9 +39,11 @@ endif()
 
 if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "AMD" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86" ) 
 
-    set(SYSTEM_CPU_TYPE x86)
+    set(CPU_IS_X86 ON) 
+    set(I386 1)
 
     if (${CPU_IS_64})
+        set(AMD64 1)
         add_definitions(-DRC_ARH_x64)   
         message("== build for amd64 system" )
     else(${CPU_IS_32})
@@ -51,21 +53,20 @@ if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "AMD" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES
 
 elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES "ARM" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch")
 
-    set(SYSTEM_CPU_TYPE arm)
     set(CPU_IS_ARM ON) 
 
     # add_definitions(-D__arm__)
 
     if (${CMAKE_SIZEOF_VOID_P} EQUAL 8)
         set(ARM64 1)
-        set(ARM   0)
+        unset(ARM)
         add_definitions(-DRC_ARH_arm64)   
         add_definitions(-DARM64)   
         add_definitions(-DCPU_TYPE=arm64)  
         message("== build for  arm64 system" )
     elseif(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
         set(ARM 1) 
-        set(ARM64 0) 
+        # set(ARM64 0) 
         add_definitions(-DRC_ARH_arm32)   
         add_definitions(-DARM)   
         add_definitions(-DCPU_TYPE=arm)   
@@ -231,13 +232,13 @@ if (WIN32)
     string(FIND "${CMAKE_EXE_LINKER_FLAGS}" "-m64"         check_arch_gnu)
 
     if (NOT ${check_arch_ms} EQUAL -1 OR ${check_arch_gnu} EQUAL -1)
-        if (SYSTEM_CPU_TYPE EQUAL arm)
+        if (CPU_IS_ARM)
             set(arch "arm64")
         else()
             set(arch "x64")
         endif()
     else()
-        if (SYSTEM_CPU_TYPE EQUAL arm)
+        if (CPU_IS_ARM)
             set(arch "arm32")
         else()
             set(arch "Win32")
@@ -280,7 +281,7 @@ if (WIN32)
         # by default CMake with llvm-rc create file with .rc.res.res extention instade of .rc.res"    
         set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <DEFINES> -fo <OBJECT> <SOURCE>")
 
-        if (${SYSTEM_CPU_TYPE} STREQUAL "amd" OR ${SYSTEM_CPU_TYPE} STREQUAL "x86" )
+        if (CPU_IS_X86)
            add_compile_options("-mcrc32")
         endif()
 
@@ -320,10 +321,7 @@ endif()
 if (UNIX)
     set(OS_DIR posix)
 
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++20") # -msse4 
-
-    if (NOT ${SYSTEM_CPU_TYPE} EQUAL "arm")
+    if (NOT CPU_IS_ARM)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4")
     endif()
 
@@ -333,12 +331,9 @@ if (UNIX)
     if (NOT FREEBSD)
         set(LIB_dl dl)
     endif()
-    if (LINUX)
-        set(LIB_atomic_ID    atomic) 
-
-    add_compile_options("-fvisibility=hidden") 
-
-    endif()
+    # if (LINUX)
+    #     set(LIB_atomic_ID    atomic) 
+    # endif()
 
 endif()
 
@@ -361,7 +356,6 @@ if (APPLE)
 
     link_libraries("-framework Foundation")
     link_libraries("-framework Security")
-    add_compile_options("-fvisibility=hidden") 
 
     if (NOT CMAKE_CROSSCOMPILING)
         include_directories(/opt/local/include)
@@ -375,22 +369,45 @@ elseif (UNIX)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
 endif()
 
-if (LINUX AND CPU_IS_ARM AND CPU_IS_64)
-    set(COMMON_FLAGS "-DLINUX -DARM64 -pipe -fPIC -fsigned-char -fmessage-length=0")
-    set(PROD_FLAGS "${COMMON_FLAGS} -O3 ")
-    set(DEV_FLAGS  "${COMMON_FLAGS} -ggdb -Wall -Wno-non-virtual-dtor")
-endif()
-if (LINUX AND CPU_IS_ARM AND CPU_IS_32)
-    set(COMMON_FLAGS "-DLINUX   -DARM -pipe -fPIC -fsigned-char -fmessage-length=0 -DFB_SEND_FLAGS=MSG_NOSIGNAL")
-    set(PROD_FLAGS  "${COMMON_FLAGS} -O3")
-    set(DEV_FLAGS   "${COMMON_FLAGS} -ggdb -Wall -Wno-non-virtual-dtor -p")
+if (UNIX)
+
+    add_compile_options("-fvisibility=hidden") 
+    set(COMMON_FLAGS "${COMMON_FLAGS} -fPIC -fsigned-char")
+
+    # set(LIB_readline readline)
+
+    if (APPLE)
+    endif()
+
+    if (LINUX)
+        set(COMMON_FLAGS "${COMMON_FLAGS} -DLINUX -pipe -fmessage-length=0")
+        set(PROD_FLAGS   "${PROD_FLAGS} -O3") 
+        set(DEV_FLAGS    "${DEV_FLAGS}  -ggdb -Wall -Wno-non-virtual-dtor -DDEV_BUILD")    
+        
+        if (CPU_IS_ARM AND CPU_IS_64)
+            set(COMMON_FLAGS "${COMMON_FLAGS} -DARM64")
+        endif()
+        if (CPU_IS_ARM AND CPU_IS_32)
+            set(COMMON_FLAGS "${COMMON_FLAGS} -DARM")
+            set(DEV_FLAGS    "${DEV_FLAGS} -p")
+        endif()
+
+        if (CPU_IS_AMD AND CPU_IS_64)
+            set(COMMON_FLAGS "${COMMON_FLAGS} -DAMD64 -DFB_SEND_FLAGS=MSG_NOSIGNAL")
+        endif()
+        if (CPU_IS_AMD AND CPU_IS_32)
+
+        endif()
+    endif()
 endif()
 
-    set(CMAKE_C_FLAGS_DEBUG     "${CMAKE_C_FLAGS_DEBUG} ${DEV_FLAGS}")
-    set(CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} ${PROD_FLAGS}")
-    set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${DEV_FLAGS}")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${PROD_FLAGS}")
+set(CMAKE_C_FLAGS_DEBUG     "${CMAKE_C_FLAGS_DEBUG}     ${COMMON_FLAGS} ${DEV_FLAGS}" )
+set(CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   ${COMMON_FLAGS} ${PROD_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG}   ${COMMON_FLAGS} ${DEV_FLAGS}" )
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${COMMON_FLAGS} ${PROD_FLAGS}")
 
+message("== CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE}")
+message("== CMAKE_CXX_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG}")
 
 ################################################################################
 #
