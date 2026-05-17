@@ -58,7 +58,7 @@ set(epp_boot_gds_files
     jrd/Function.epp
 
     jrd/SystemTriggers.epp
-
+    jrd/Package.epp
 )
 set(epp_master_files
     auth/SecurityDatabase/LegacyManagement.epp
@@ -483,6 +483,8 @@ file(GLOB engine_src
     "jrd/recsrc/*.cpp"
     "jrd/replication/*.cpp"
     "jrd/trace/*.cpp"
+    "jrd/Package.h"
+
     "jrd/os/${OS_DIR}/*.cpp"
 
     "jrd/sys-packages/*.cpp"
@@ -528,6 +530,7 @@ set(engine_generated_src
     utilities/gstat/dba.epp
 
     jrd/SystemTriggers.epp
+    jrd/Package.epp
 )
 add_epp_suffix(engine_generated_src boot)
 add_epp_suffix(engine_generated_src master)
@@ -1182,11 +1185,12 @@ file(GLOB Engine_test_src
 
 add_executable             (libEngine14_test ${Engine_test_src} ${engine_generated_src_boot} )
 target_link_libraries      (libEngine14_test engine_common boot_alice boot_burp common ${LIB_cds} ${LIB_atomic_ID})
-target_link_libraries      (libEngine14_test fbclient)
+# target_link_libraries      (libEngine14_test fbclient)
+target_link_libraries      (libEngine14_test boot_yvalve)
 target_link_directories    (libEngine14_test PUBLIC ${output_dir}/lib)
 set_tests_directory        (libEngine14_test)
 project_group              (libEngine14_test Tests)
-target_link_options        (libEngine14_test PUBLIC "-static-libstdc++")
+# target_link_options        (libEngine14_test PUBLIC "-static-libstdc++")
 
 
 # clang++     "-static-libstdc++" 
@@ -1292,7 +1296,7 @@ project_group              (isql_test Tests)
 ################################################################################
 
 add_custom_target(run_tests
-    ALL
+    # ALL
     COMMAND  common_test       --log_level=error
     COMMAND  libEngine14_test  --log_level=error
     COMMAND  isql_test         --log_level=error
