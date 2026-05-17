@@ -726,6 +726,7 @@ using namespace Firebird;
 %token <metaNamePtr> UNLIST
 %token <metaNamePtr> WITHIN
 %token <metaNamePtr> RDB_RESET_CONTEXT
+%token <metaNamePtr> CONSTANT
 
 // precedence declarations for expression evaluation
 
@@ -886,6 +887,7 @@ using namespace Firebird;
 	Jrd::SetBindNode* setBindNode;
 	Jrd::SessionResetNode* sessionResetNode;
 	Jrd::ForRangeNode::Direction forRangeDirection;
+	Jrd::CreatePackageConstantNode* createPackageConstantNode;
 }
 
 %include types.y
@@ -1012,6 +1014,13 @@ grant0($node)
 			$node->grantAdminOption = $7;
 			$node->grantor = $8;
 		}
+	| privileges(NOTRIAL(&$node->privileges)) ON PACKAGE symbol_package_name
+			TO non_role_grantee_list(NOTRIAL(&$node->users)) grant_option granted_by
+		{
+			$node->object = newNode<GranteeClause>(obj_package_header, *$4);
+			$node->grantAdminOption = $7;
+			$node->grantor = $8;
+		}
 	| usage_privilege(NOTRIAL(&$node->privileges)) ON EXCEPTION symbol_exception_name
 			TO non_role_grantee_list(NOTRIAL(&$node->users)) grant_option granted_by
 		{
@@ -1037,6 +1046,13 @@ grant0($node)
 			TO non_role_grantee_list(NOTRIAL(&$node->users)) grant_option granted_by
 		{
 			$node->object = newNode<GranteeClause>(obj_schema, QualifiedName(*$4));
+			$node->grantAdminOption = $7;
+			$node->grantor = $8;
+		}
+	| usage_privilege(NOTRIAL(&$node->privileges)) ON PACKAGE symbol_package_name
+			TO non_role_grantee_list(NOTRIAL(&$node->users)) grant_option granted_by
+		{
+			$node->object = newNode<GranteeClause>(obj_package_header, *$4);
 			$node->grantAdminOption = $7;
 			$node->grantor = $8;
 		}
@@ -1152,6 +1168,7 @@ execute_privilege($privilegeArray)
 %type usage_privilege(<privilegeArray>)
 usage_privilege($privilegeArray)
 	: USAGE							{ $privilegeArray->add(PrivilegeClause('G', NULL)); }
+	;
 
 %type privilege(<privilegeArray>)
 privilege($privilegeArray)
@@ -1306,6 +1323,13 @@ revoke0($node)
 			$node->grantAdminOption = $1;
 			$node->grantor = $8;
 		}
+	| rev_grant_option privileges(NOTRIAL(&$node->privileges)) ON PACKAGE symbol_package_name
+			FROM non_role_grantee_list(NOTRIAL(&$node->users)) granted_by
+		{
+			$node->object = newNode<GranteeClause>(obj_package_header, *$5);
+			$node->grantAdminOption = $1;
+			$node->grantor = $8;
+		}
 	| rev_grant_option usage_privilege(NOTRIAL(&$node->privileges)) ON EXCEPTION symbol_exception_name
 			FROM non_role_grantee_list(NOTRIAL(&$node->users)) granted_by
 		{
@@ -1331,6 +1355,13 @@ revoke0($node)
 			FROM non_role_grantee_list(NOTRIAL(&$node->users)) granted_by
 		{
 			$node->object = newNode<GranteeClause>(obj_schema, QualifiedName(*$5));
+			$node->grantAdminOption = $1;
+			$node->grantor = $8;
+		}
+	| rev_grant_option usage_privilege(NOTRIAL(&$node->privileges)) ON PACKAGE symbol_package_name
+			FROM non_role_grantee_list(NOTRIAL(&$node->users)) granted_by
+		{
+			$node->object = newNode<GranteeClause>(obj_package_header, QualifiedName(*$5));
 			$node->grantAdminOption = $1;
 			$node->grantor = $8;
 		}
@@ -2468,6 +2499,45 @@ ltt_table_clause
 			}
 	;
 
+%type <createRelationNode> packaged_table_clause
+packaged_table_clause
+	: simple_table_name
+			{
+				$<createRelationNode>$ = newNode<CreateRelationNode>($1);
+				$<createRelationNode>$->tempFlag = REL_temp_ltt;
+			}
+		'(' table_elements($2) ')' [YYVALID;] ltt_subclause_opt($2) packaged_table_indexes_opt($2)
+			{
+				$$ = $2;
+			}
+	;
+
+%type packaged_table_indexes_opt(<createRelationNode>)
+packaged_table_indexes_opt($createRelationNode)
+	: /* nothing */
+	| packaged_table_indexes($createRelationNode)
+	;
+
+%type packaged_table_indexes(<createRelationNode>)
+packaged_table_indexes($createRelationNode)
+	: packaged_table_index($createRelationNode)
+	| packaged_table_indexes($createRelationNode) ',' packaged_table_index($createRelationNode)
+	;
+
+%type packaged_table_index(<createRelationNode>)
+packaged_table_index($createRelationNode)
+	: unique_opt order_direction INDEX valid_symbol_name [YYVALID;] column_parens
+		{
+			const auto node = newNode<CreateIndexNode>(QualifiedName(*$4));
+			node->unique = $1;
+			node->descending = $2;
+			node->columns = $6;
+
+			auto clause = newNode<RelationNode::AddPackagedTableIndexClause>(node);
+			$createRelationNode->clauses.add(clause);
+		}
+	;
+
 %type ltt_subclause_opt(<createRelationNode>)
 ltt_subclause_opt($createRelationNode)
 	: // nothing by default. Will be set "on commit delete rows" in dsqlPass
@@ -3175,6 +3245,10 @@ package_item
 		{ $$ = CreateAlterPackageNode::Item::create($2); }
 	| PROCEDURE procedure_clause_start ';'
 		{ $$ = CreateAlterPackageNode::Item::create($2); }
+	| TEMPORARY TABLE packaged_table_clause ';'
+		{ $$ = CreateAlterPackageNode::Item::create($3); }
+	| CONSTANT package_const_item ';'
+		{ $$ = CreateAlterPackageNode::Item::create($2); }
 	;
 
 %type <createAlterPackageNode> alter_package_clause
@@ -3262,6 +3336,14 @@ replace_package_body_clause
 		{ $$ = newNode<RecreatePackageBodyNode>($1); }
 	;
 
+%type <createPackageConstantNode> package_const_item
+package_const_item
+	: symbol_package_const_name data_type_descriptor '=' value
+		{
+			$$ = newNode<CreatePackageConstantNode>(*$1, $2, $4);
+			$$->source = makeParseStr(YYPOSNARG(3), YYPOSNARG(4));
+		}
+	;
 
 %type <createAlterSchemaNode> replace_schema_clause
 replace_schema_clause
@@ -6261,11 +6343,11 @@ set_statistics
 comment
 	: COMMENT ON ddl_type0 IS ddl_desc
 		{ $$ = newNode<CommentOnNode>($3, QualifiedName(), "", *$5); }
-	| COMMENT ON ddl_type1_schema symbol_ddl_name IS ddl_desc
+	| COMMENT ON ddl_type1_schema scoped_qualified_name IS ddl_desc
 		{ $$ = newNode<CommentOnNode>($3, *$4, "", *$6); }
 	| COMMENT ON ddl_type1_noschema valid_symbol_name IS ddl_desc
 		{ $$ = newNode<CommentOnNode>($3, QualifiedName(*$4), "", *$6); }
-	| COMMENT ON COLUMN symbol_ddl_name '.' valid_symbol_name IS ddl_desc
+	| COMMENT ON COLUMN scoped_qualified_name '.' valid_symbol_name IS ddl_desc
 		{ $$ = newNode<CommentOnNode>(obj_relation, *$4, *$6, *$8); }
 	| COMMENT ON ddl_type3 scoped_qualified_name '.' valid_symbol_name IS ddl_desc
 		{ $$ = newNode<CommentOnNode>($3, *$4, *$6, *$8); }
@@ -6329,6 +6411,7 @@ ddl_type3
 	: PARAMETER				{ $$ = obj_parameter; }
 	| PROCEDURE PARAMETER	{ $$ = obj_procedure; }
 	| FUNCTION PARAMETER	{ $$ = obj_udf; }
+	| CONSTANT				{ $$ = obj_package_constant; }
 	;
 
 %type <intVal> ddl_type4
@@ -9818,11 +9901,6 @@ symbol_label_name
 	: valid_symbol_name
 	;
 
-%type <qualifiedNamePtr> symbol_ddl_name
-symbol_ddl_name
-	: schema_opt_qualified_name
-	;
-
 %type <qualifiedNamePtr> symbol_procedure_name
 symbol_procedure_name
 	: schema_opt_qualified_name
@@ -9880,6 +9958,11 @@ symbol_schema_name
 
 %type <metaNamePtr> symbol_window_name
 symbol_window_name
+	: valid_symbol_name
+	;
+
+%type <metaNamePtr> symbol_package_const_name
+symbol_package_const_name
 	: valid_symbol_name
 	;
 
@@ -10203,6 +10286,7 @@ non_reserved_word
 	| SCHEMA
 	| UNLIST
 	| ERROR
+	| CONSTANT
 	;
 
 %%
