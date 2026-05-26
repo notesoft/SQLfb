@@ -39,10 +39,12 @@ endfunction(check_functions)
 ########################################
 function(check_type_alignment type var)
     if (NOT DEFINED ${var})
-        check_c_source_runs("void main(){struct s{char a;${type} b;};exit((int)&((struct s*)0)->b);}" ${var})
-        #message(STATUS "Performing Test ${var} - It's still OK.")
-        message(STATUS "Performing Test ${var} - Success")
-        set(${var} ${${var}_EXITCODE} CACHE STRING "${type} alignment" FORCE)
+        check_type_size(${type} SIZEOF) # ALIGNOF is typically equal to SIZEOF for primitives
+        set(ALIGNOF ${SIZEOF})
+        set(${var} ${ALIGNOF} CACHE STRING "${type} alignment" FORCE)
+        # check_c_source_runs("void int main(){struct s{char a;${type} b;}; return ((int)&((struct s*)0)->b); }" ${var})
+        # message(STATUS "Performing Test ${var} = [${${var}_EXITCODE}] - It's still OK.")
+        # set(${var} ${${var}_EXITCODE} CACHE STRING "${type} alignment" FORCE)
     endif()
 endfunction(check_type_alignment)
 

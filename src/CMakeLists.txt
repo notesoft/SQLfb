@@ -1184,93 +1184,10 @@ file(GLOB Engine_test_src
     )
 
 add_executable             (libEngine14_test ${Engine_test_src} ${engine_generated_src_boot} )
-target_link_libraries      (libEngine14_test engine_common boot_alice boot_burp common ${LIB_cds} ${LIB_atomic_ID})
-# target_link_libraries      (libEngine14_test fbclient)
-target_link_libraries      (libEngine14_test boot_yvalve)
+target_link_libraries      (libEngine14_test engine_common alice  burp common yvalve ${LIB_cds} ${LIB_atomic_ID})
 target_link_directories    (libEngine14_test PUBLIC ${output_dir}/lib)
 set_tests_directory        (libEngine14_test)
 project_group              (libEngine14_test Tests)
-# target_link_options        (libEngine14_test PUBLIC "-static-libstdc++")
-
-
-# clang++     "-static-libstdc++" 
-# -o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/gen/Debug/firebird/tests/libEngine14_test 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Attachment.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/BlobUtil.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/CacheVector.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/CharSetContainer.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Coercion.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Collation.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/ConfigTable.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/CryptoManager.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/DataTypeUtil.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Database.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/DbCreators.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/DebugInterface.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/ExtEngineManager.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Function.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/GarbageCollector.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/GlobalRWLock.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/InitCDSLib.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/IntlManager.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/KeywordsTable.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Mapping.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/MetaName.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Monitoring.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/PreparedStatement.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/ProfilerManager.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/RandomGenerator.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/RecordBuffer.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/RecordSourceNodes.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Relation.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Resources.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/ResultSet.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Routine.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/RuntimeStatistics.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Savepoint.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/Statement.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/SysFunction.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/SystemPackages.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/SystemTriggers.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/TempSpace.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/TimeZone.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/UserManagement.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/VirtualTable.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/WorkerAttachment.o 
-# /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/blb.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/blob_filter.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/btn.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/btr.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/builtin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/cch.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/cmp.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/cvt.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/cvt2.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/dfw.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/dpm.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/dyn_util.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/err.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/event.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/evl.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/exe.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/ext.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/filters.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/flu.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/fun.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/grant.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/idx.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/inf.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/ini.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/intl.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/intl_builtin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/jrd.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/lck.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/met.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/mov.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/nbak.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/nodebug.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/ods.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/pag.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/par.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/rlck.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/rpb_chain.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/scl.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/sdw.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/shut.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/sort.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/sqz.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/svc.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/tpc.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/tra.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/validation.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/vec.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/vio.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/os/posix/unix.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/AggNodes.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/BlrDebugWriter.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/BoolNodes.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DSqlDataTypeUtil.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DdlNodes.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DsqlBatch.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DsqlCompilerScratch.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DsqlCursor.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DsqlRequests.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DsqlStatementCache.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/DsqlStatements.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/ExprNodes.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/Keywords.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/PackageNodes.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/Parser.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/StmtNodes.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/WinNodes.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/ddl.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/dsql.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/errd.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/gen.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/make.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/metd.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/movd.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/parse.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/pass1.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/dsql/utld.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/extds/ExtDS.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/extds/InternalDS.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/extds/IscDS.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/extds/ValidatePassword.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/optimizer/InnerJoin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/optimizer/Optimizer.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/optimizer/OuterJoin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/optimizer/Retrieval.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/AggregatedStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/BitmapTableScan.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/BufferedStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/ConditionalStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/Cursor.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/ExternalTableScan.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/FilteredStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/FirstRowsStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/FullOuterJoin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/FullTableScan.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/HashJoin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/IndexTableScan.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/LocalTableStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/LockedStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/MergeJoin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/NestedLoopJoin.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/ProcedureScan.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/RecordSource.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/RecursiveStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/SingularStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/SkipRowsStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/SortedStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/TableValueFunctionScan.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/Union.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/VirtualTableScan.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/recsrc/WindowedStream.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/replication/Applier.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/replication/ChangeLog.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/replication/Config.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/replication/Manager.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/replication/Publisher.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/replication/Replicator.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/replication/Utils.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/sys-packages/SqlPackage.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/trace/TraceCmdLine.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/trace/TraceConfigStorage.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/trace/TraceLog.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/trace/TraceManager.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/trace/TraceObjects.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/trace/TraceService.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/lock/lock.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/tests/BlrGenTest.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/tests/CompressorTest.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/tests/EngineTest.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/jrd/tests/RecordNumberTest.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/lock/tests/LockManagerTest.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/alice/alice.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/alice/alice_meta.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/alice/exe.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/alice/tdr.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/BurpTasks.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/OdsDetection.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/backup.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/burp.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/canonical.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/misc.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/mvol.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/burp/restore.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/utilities/gsec/gsec.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/utilities/gstat/dba.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/utilities/gstat/ppg.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/utilities/nbackup/nbackup.o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/common.a   -Wl,--no-undefined -Wl,-rpath,\$ORIGIN/../lib -Wl,-rpath,\$ORIGIN/../intl  -Wl,--version-script,empty.vers -L/home/khalyutin/WORK/source/contribution/SQLfb-native/gen/Debug/firebird/lib -L/home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug  -lm   -ldecFloat  -ltommath -lre2 -lcds -L/home/khalyutin/WORK/source/contribution/SQLfb-native/gen/Debug/firebird/lib -L/home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug -lfbclient -ltommath -ltomcrypt
-
-
-  
-# clang++ 
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/src/include 
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/src/include/gen 
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/include/gen 
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/code/src/include/gen 
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/code/src/include   
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/code/extern/boost 
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/code/extern/libcds 
-# -DCDS_BUILD_STATIC_LIB 
-# -I/home/khalyutin/WORK/source/contribution/SQLfb-native/code/extern/re2 
-# -ggdb -DLINUX -DARM64 -pipe -MMD -fPIC -Wall -fsigned-char -fmessage-length=0 
-# -Wno-non-virtual-dtor  -DDEV_BUILD -fno-rtti -std=c++20 -Werror=delete-incomplete -Werror=return-type     
-# -c /home/khalyutin/WORK/source/contribution/SQLfb-native/code/src/lock/tests/LockManagerTest.cpp 
-# -o /home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug/lock/tests/LockManagerTest.o
-
-
-
-
-#  "-static-libstdc++" -o
-
-#  -Wl,--no-undefined -Wl,-rpath,\$ORIGIN/../lib -Wl,-rpath,\$ORIGIN/../intl  -Wl,--version-script,empty.vers 
-# -L/home/khalyutin/WORK/source/contribution/SQLfb-native/gen/Debug/firebird/lib 
-# -L/home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug  
-# -lm   -ldecFloat  -ltommath -lre2 -lcds 
-# -L/home/khalyutin/WORK/source/contribution/SQLfb-native/gen/Debug/firebird/lib 
-# -L/home/khalyutin/WORK/source/contribution/SQLfb-native/temp/Debug 
-# -lfbclient 
-# -ltommath 
-# -ltomcrypt
 
 ################################################################################
 # isql test
@@ -1296,7 +1213,7 @@ project_group              (isql_test Tests)
 ################################################################################
 
 add_custom_target(run_tests
-    # ALL
+    ALL
     COMMAND  common_test       --log_level=error
     COMMAND  libEngine14_test  --log_level=error
     COMMAND  isql_test         --log_level=error
