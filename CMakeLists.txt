@@ -377,6 +377,7 @@ if (UNIX)
     # set(LIB_readline readline)
 
     if (APPLE)
+        set(CMAKE_OSX_SYSROOT "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")
     endif()
 
     if (LINUX)
