@@ -338,9 +338,15 @@ set(burp_generated_src
 add_epp_suffix(burp_generated_src boot)
 add_epp_suffix(burp_generated_src master)
 
+set(burp_stub_src
+    burp/main/FastPathBurpProviderStub.cpp
+    burp/main/FastPathRecordReaderStub.cpp
+    burp/main/FastPathRecordWriterStub.cpp
+)
+
 if (NOT CMAKE_CROSSCOMPILING)
 
-add_library                 (boot_burp ${burp_src} ${burp_generated_src_boot})
+add_library                 (boot_burp ${burp_src} ${burp_stub_src} ${burp_generated_src_boot})
 project_group               (boot_burp Boot)
 
 endif() # if (NOT CMAKE_CROSSCOMPILING)
@@ -350,7 +356,7 @@ endif() # if (NOT CMAKE_CROSSCOMPILING)
 # LIBRARY burp
 ########################################
 
-add_library                 (burp ${burp_src} ${burp_generated_src_master})
+add_library                 (burp ${burp_src} ${burp_stub_src} ${burp_generated_src_master})
 
 
 ########################################
@@ -819,12 +825,6 @@ target_link_libraries       (gfix alice common yvalve yvalve_common remote)
 
 file(GLOB gbak_include "burp/*.h" "burp/engine/*.h")
 
-set(gbak_stub_src
-    burp/main/FastPathBurpProviderStub.cpp
-    burp/main/FastPathRecordReaderStub.cpp
-    burp/main/FastPathRecordWriterStub.cpp
-)
-
 file(GLOB gbak_src     
     remote/*.cpp
     remote/os/${OS_DIR}/xnet.cpp
@@ -835,7 +835,7 @@ file(GLOB gbak_src
 
 if (NOT CMAKE_CROSSCOMPILING)
 
-add_executable              (boot_gbak burp/main/burpMain.cpp ${gbak_stub_src} ${gbak_include} ${VERSION_RC})
+add_executable              (boot_gbak burp/main/burpMain.cpp  $<TARGET_OBJECTS:yvalve_common> ${gbak_src} ${gbak_include} ${VERSION_RC})
 target_link_libraries       (boot_gbak boot_burp common boot_yvalve)
 set_output_directory        (boot_gbak . CURRENT_DIR)
 project_group               (boot_gbak Boot)
@@ -847,7 +847,7 @@ endif() # if (NOT CMAKE_CROSSCOMPILING)
 # EXECUTABLE gbak
 ########################################
 
-add_executable              (gbak burp/main/burpMain.cpp ${gbak_stub_src} ${gbak_include} ${VERSION_RC})
+add_executable              (gbak burp/main/burpMain.cpp $<TARGET_OBJECTS:yvalve_common> ${gbak_src} ${gbak_include} ${VERSION_RC})
 target_link_libraries       (gbak burp common yvalve)
 
 ########################################
