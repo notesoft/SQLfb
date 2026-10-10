@@ -48,5 +48,5 @@ jobs:
     - name: Upload zip 
       uses: actions/upload-artifact@v4
       with:
-          name: firebird-${{ matrix.os }}-zip
-          path: distr/firebird-*.zip
+          name: firebird-snapshot-${{ matrix.os }}
+          path: distr/firebird-*.snapshot-*.zip
