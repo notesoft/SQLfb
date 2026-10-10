@@ -44,3 +44,9 @@ jobs:
     - name: runTest
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8
 
+
+    - name: Upload zip 
+      uses: actions/upload-artifact@v4
+      with:
+          name: firebird-${{ matrix.os }}-zip
+          path: distr/firebird-*.zip
