@@ -328,6 +328,7 @@ add_library                 (alice ${alice_src} ${alice_generated_src_master})
 ########################################
 
 file(GLOB burp_src "burp/*.cpp" "burp/*.h")
+file(GLOB burp_engine_src "burp/engine/*.cpp" "burp/engine/*.h")
 
 set(burp_generated_src
     burp/backup.epp
@@ -488,6 +489,7 @@ set(engine_src ${engine_src}
     utilities/gsec/gsec.cpp
     utilities/gstat/ppg.cpp
     utilities/nbackup/nbackup.cpp
+    ${burp_engine_src}
     # parse
     ${GENERATED_DIR}/dsql/parse.cpp
 
@@ -815,7 +817,13 @@ target_link_libraries       (gfix alice common yvalve yvalve_common remote)
 # EXECUTABLE boot_gbak
 ########################################
 
-file(GLOB gbak_include "burp/*.h")
+file(GLOB gbak_include "burp/*.h" "burp/engine/*.h")
+
+set(gbak_stub_src
+    burp/main/FastPathBurpProviderStub.cpp
+    burp/main/FastPathRecordReaderStub.cpp
+    burp/main/FastPathRecordWriterStub.cpp
+)
 
 file(GLOB gbak_src     
     remote/*.cpp
