@@ -62,6 +62,9 @@ function(build_icu4c_win_LLVM  nix_arh)
 
         message("== library icu4c prapere to rebuld now. Plese wait... [${ICU_DIR_result_nix}/${icu4c_lib_name}] ")
 
+        # Use GNU make instead of CMAKE_MAKE_PROGRAM (Ninja), because ICU's ./configure generates Makefiles
+        find_program(ICU_MAKE_PROGRAM NAMES gmake make REQUIRED)
+
         set(output_dir "${ICU_DIR_build_nix}/result")
 
         file(REMOVE_RECURSE ${ICU_DIR_result_nix})
@@ -93,8 +96,8 @@ function(build_icu4c_win_LLVM  nix_arh)
             --disable-samples
         WORKING_DIRECTORY ${ICU_DIR_build_nix}
         ) # --with-data-packaging=archive # - not acceptable on osx
-        execute_process(COMMAND ${HOST_ENV} ${CMAKE_MAKE_PROGRAM}          WORKING_DIRECTORY ${ICU_DIR_build_nix})
-        execute_process(COMMAND ${HOST_ENV} ${CMAKE_MAKE_PROGRAM} install  WORKING_DIRECTORY ${ICU_DIR_build_nix})
+        execute_process(COMMAND ${HOST_ENV} ${ICU_MAKE_PROGRAM}          WORKING_DIRECTORY ${ICU_DIR_build_nix})
+        execute_process(COMMAND ${HOST_ENV} ${ICU_MAKE_PROGRAM} install  WORKING_DIRECTORY ${ICU_DIR_build_nix})
 
         if (APPLE)
             execute_process(COMMAND install_name_tool -change libicudata.${icu_MAJOR}.dylib @loader_path/libicudata.${icu_MAJOR}.dylib ${output_dir}/lib/${icu4c_lib_name} )
