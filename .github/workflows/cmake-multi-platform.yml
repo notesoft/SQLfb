@@ -86,10 +86,10 @@ jobs:
         -S "${{ steps.strings.outputs.source-dir }}"
 
     - name: Build 
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all
 
     - name: RunTest
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests
 
     - name: Upload zip 
       uses: actions/upload-artifact@v4
