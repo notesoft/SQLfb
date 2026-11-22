@@ -40,12 +40,12 @@ jobs:
         -G "Unix Makefiles"
 
     - name: Build
-      env:
-        MAKEFLAGS: ""
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
+#      env:
+#        MAKEFLAGS: ""
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8 -- -Onone
 
     - name: RunTest
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8 -- -Onone
 
 
     - name: Upload zip 
