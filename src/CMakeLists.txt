@@ -1024,6 +1024,7 @@ add_custom_target(copy_files
     COMMAND ${CMAKE_COMMAND} -E copy_directory    ${CMAKE_CURRENT_SOURCE_DIR}/misc/upgrade/v4.0    ${output_dir}/misc/upgrade/v4.0
     # tzdata
 )
+add_dependencies        (copy_files ib_util)
 add_dependencies_cc     (copy_files databases employee_db) 
 project_group(copy_files "Custom build steps")
 
