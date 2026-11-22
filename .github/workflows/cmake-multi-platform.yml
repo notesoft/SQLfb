@@ -29,6 +29,10 @@ jobs:
       
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        # Convert backslashes to forward slashes on Windows for Bash/CMake safety
+        workspace_dir=$(echo '${{ github.workspace }}' | sed 's|\\|/|g')
+        echo "source-dir=$workspace_dir" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=$workspace_dir/build" >> "$GITHUB_OUTPUT"
 
 
     - name: Find VS Clang (Windows)
@@ -48,14 +52,10 @@ jobs:
         $clangC = (Join-Path $llvmBin "clang.exe") -replace '\\', '/'
         $clangCxx = (Join-Path $llvmBin "clang++.exe") -replace '\\', '/'
     
-        # Enable SSE4.2 (includes hardware CRC32) on x64 runners
-        # $extraFlags = if ($env:RUNNER_ARCH -eq "X64") { "-msse4.2" } else { "" }
-    
+  
         Write-Host "Found Clang at: $clangC"
         "CC=$clangC" >> $env:GITHUB_ENV
         "CXX=$clangCxx" >> $env:GITHUB_ENV
-        # "CFLAGS=$extraFlags" >> $env:GITHUB_ENV
-        # "CXXFLAGS=$extraFlags" >> $env:GITHUB_ENV
 
     - name: Find Clang (Unix)
       if: runner.os != 'Windows'
@@ -82,8 +82,8 @@ jobs:
         -DCMAKE_C_COMPILER="$CC"
         -DCMAKE_CXX_COMPILER="$CXX"
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -B ${{ steps.strings.outputs.build-output-dir }}
-        -S ${{ github.workspace }}
+        -B "${{ steps.strings.outputs.build-output-dir }}"
+        -S "${{ steps.strings.outputs.source-dir }}"
 
     - name: Build 
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
