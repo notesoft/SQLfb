@@ -69,7 +69,7 @@ jobs:
 
     - name: Build Windows
       if: runner.os == 'Windows' # workaround Github update to Visual Studio 18 / MSVC 14.52
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8 -- -Onone
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8 
 
     - name: Build !Windows
       if: runner.os != 'Windows'
