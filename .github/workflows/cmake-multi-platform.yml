@@ -30,7 +30,19 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Configure CMake
+    - name: Configure CMake Windows
+      if: runner.os == 'Windows' # workaround Github update to Visual Studio 18 / MSVC 14.52
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_CXX_FLAGS="-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH"
+        -S ${{ github.workspace }}
+        -G "Unix Makefiles"
+
+    - name: Configure CMake !Windows
+      if: runner.os != 'Windows'
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
@@ -39,13 +51,21 @@ jobs:
         -S ${{ github.workspace }}
         -G "Unix Makefiles"
 
-    - name: Build
-#      env:
-#        MAKEFLAGS: ""
+    - name: Build Windows
+      if: runner.os == 'Windows' # workaround Github update to Visual Studio 18 / MSVC 14.52
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8 -- -Onone
 
-    - name: RunTest
+    - name: Build !Windows
+      if: runner.os != 'Windows'
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
+
+    - name: RunTest Windows
+      if: runner.os == 'Windows'
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8 -- -Onone
+
+    - name: RunTest !Windows 
+      if: runner.os != 'Windows'
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8
 
 
     - name: Upload zip 
