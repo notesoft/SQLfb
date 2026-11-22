@@ -1,9 +1,9 @@
 name: CMake on multiple platforms
 
 # it is termorary, for check run error
-# on: [push, pull_request]
-on:
-    workflow_dispatch:
+on: [push, pull_request]
+#on:
+#    workflow_dispatch:
 
 jobs:
   build:
@@ -40,7 +40,7 @@ jobs:
         -DCMAKE_C_COMPILER="C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/Llvm/x64/bin/clang.exe"
         -DCMAKE_CXX_COMPILER="C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/Llvm/x64/bin/clang++.exe"        
         -S ${{ github.workspace }}
-        -G "Unix Makefiles"
+        -G "Ninja"
 
     - name: Configure CMake Windows ARM64
       if: runner.os == 'Windows'&& runner.arch == 'ARM64'   # workaround Github update to Visual Studio 18 
@@ -52,10 +52,7 @@ jobs:
         -DCMAKE_C_COMPILER="C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/Llvm/ARM64/bin/clang.exe"
         -DCMAKE_CXX_COMPILER="C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/Llvm/ARM64/bin/clang++.exe"        
         -S ${{ github.workspace }}
-        -G "Unix Makefiles"
-
-
-
+        -G "Ninja"
 
     - name: Configure CMake !Windows
       if: runner.os != 'Windows'
@@ -67,21 +64,21 @@ jobs:
         -S ${{ github.workspace }}
         -G "Unix Makefiles"
 
-    - name: Build Windows
-      if: runner.os == 'Windows' # workaround Github update to Visual Studio 18 / MSVC 14.52
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8 -- -Onone
+#    - name: Build Windows
+#      if: runner.os == 'Windows' # workaround Github update to Visual Studio 18 / MSVC 14.52
+#      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8 -- -Onone
 
 
-    - name: Build !Windows
-      if: runner.os != 'Windows'
+    - name: Build 
+ #     if: runner.os != 'Windows'
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all  -j 8
 
-    - name: RunTest Windows
-      if: runner.os == 'Windows'
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8 -- -Onone
+ #   - name: RunTest Windows
+ #     if: runner.os == 'Windows'
+ #     run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8 -- -Onone
 
-    - name: RunTest !Windows 
-      if: runner.os != 'Windows'
+    - name: RunTest
+#      if: runner.os != 'Windows'
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target run_tests  -j 8
 
 
