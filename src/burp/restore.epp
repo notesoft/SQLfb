@@ -63,7 +63,6 @@
 #include "memory_routines.h"
 #include "../burp/OdsDetection.h"
 #include "../auth/trusted/AuthSspi.h"
-#include "../common/os/path_utils.h"
 #include "../common/dsc_proto.h"
 #include "../common/ThreadStart.h"
 #include "../common/db_alias.h"
@@ -4114,7 +4113,9 @@ burp_fld* get_field(BurpGlobals* tdgbl, burp_rel* relation, USHORT id)
 					GET_TEXT(tablespaceName);
 					const auto str = tdgbl->tablespaceFileMap.get(tablespaceName);
 
-					if (str && !str->equals(PRIMARY_TABLESPACE_NAME))
+					// Keep the tablespace name unless the tablespace is explicitly
+					// mapped to PRIMARY by the -TS/-TS_MAP options
+					if (!str || !str->equals(PRIMARY_TABLESPACE_NAME))
 						strcpy(X.RDB$TABLESPACE_NAME, tablespaceName);
 					break;
 				}
@@ -6987,7 +6988,9 @@ bool get_index(BurpGlobals* tdgbl, const burp_rel* relation)
 				GET_TEXT(tablespaceName);
 				const auto str = tdgbl->tablespaceFileMap.get(tablespaceName);
 
-				if (str && !str->equals(PRIMARY_TABLESPACE_NAME))
+				// Keep the tablespace name unless the tablespace is explicitly
+				// mapped to PRIMARY by the -TS/-TS_MAP options
+				if (!str || !str->equals(PRIMARY_TABLESPACE_NAME))
 					strcpy(X.RDB$TABLESPACE_NAME, tablespaceName);
 				break;
 			}
@@ -7416,29 +7419,18 @@ bool get_tablespace(BurpGlobals* tdgbl)
 		Firebird::string newFile;
 		if (tdgbl->tablespaceFileMap.get(X.RDB$TABLESPACE_NAME, newFile))
 		{
-			PathUtils::fixupSeparators(newFile.begin());
-			Firebird::PathName ts_file_name;
-
-			if (PathUtils::isRelative(newFile.c_str()))
-			{
-				Firebird::PathName expanded_db;
-				expandDatabaseName(tdgbl->gbl_database_file_name, expanded_db, NULL);
-
-				Firebird::PathName db_path, db_file;
-				PathUtils::splitLastComponent(db_path, db_file, expanded_db);
-				PathUtils::concatPath(ts_file_name, db_path, newFile.c_str());
-			}
-			else
-				ts_file_name = newFile.c_str();
-
-			if (ts_file_name.length() >= sizeof(X.RDB$FILE_NAME))
+			// The value is stored as it was given. Gbak may run on a machine with
+			// an incompatible file naming, so neither the separators nor the
+			// relativeness of the name are interpreted here: the engine handles that,
+			// against the real filename of the database being restored.
+			if (newFile.length() >= sizeof(X.RDB$FILE_NAME))
 			{
 				BURP_error(46, false); // msg 46 string truncated
 				return false;
 			}
 
 			X.RDB$FILE_NAME.NULL = FALSE;
-			strcpy(X.RDB$FILE_NAME, ts_file_name.c_str());
+			strcpy(X.RDB$FILE_NAME, newFile.c_str());
 		}
 		else if (!tdgbl->gbl_sw_ts_orig_paths)
 		{
@@ -7449,8 +7441,7 @@ bool get_tablespace(BurpGlobals* tdgbl)
 	}
 	END_STORE
 	ON_ERROR
-		BURP_print_status(&tdgbl->status_vector);
-		return false;
+		general_on_error ();
 	END_ERROR
 
 	return true;
@@ -8517,7 +8508,9 @@ bool get_relation(BurpGlobals* tdgbl, Coordinator* coord, RestoreRelationTask* t
 
 			const auto str = tdgbl->tablespaceFileMap.get(tablespaceName);
 
-			if (str && !str->equals(PRIMARY_TABLESPACE_NAME))
+			// Keep the tablespace name unless the tablespace is explicitly
+			// mapped to PRIMARY by the -TS/-TS_MAP options
+			if (!str || !str->equals(PRIMARY_TABLESPACE_NAME))
 				strcpy(tableSpace, tablespaceName);
 
 			break;
